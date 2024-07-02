@@ -56,4 +56,49 @@ describe('template spec', () => {
     cy.get('.todo-list li')
       .should('have.length', 2);
   });
+    
+  it('Verifica contagem de tarefas ativas', () => {
+    cy.visit('http://127.0.0.1:7001');
+    cy.get('.new-todo')
+      .type('Task 1{enter}')
+      .type('Task 2{enter}')
+      .type('Task 3{enter}');
+    cy.get('.todo-list li .toggle')
+      .first()
+      .click();
+    cy.get('.todo-count')
+      .should('contain', '2 items left');
+  });
+
+  it('Limpa todas as tarefas adicionadas', () => {
+    cy.visit('http://127.0.0.1:7001');
+    cy.get('.new-todo')
+      .type('Task 1{enter}')
+      .type('Task 2{enter}')
+      .type('Task 3{enter}');
+    cy.get('.clear-completed').should('not.be.visible');
+    cy.get('.todo-list li .toggle')
+      .first()
+      .click();
+    cy.get('.clear-completed').should('be.visible');
+    cy.get('.clear-completed').click();
+    cy.get('.clear-completed').should('not.be.visible');
+  });
+
+  it('Marca e desmarca compleção de uma tarefa', () => {
+    cy.visit('http://127.0.0.1:7001');
+    cy.get('.new-todo')
+      .type('Toggle task{enter}');
+    cy.get('.todo-list li .toggle')
+      .click();
+    cy.get('.todo-list li')
+      .first()
+      .should('have.class', 'completed');
+    cy.get('.todo-list li .toggle')
+      .click();
+    cy.get('.todo-list li')
+      .first()
+      .should('not.have.class', 'completed');
+  });
+  
 });
